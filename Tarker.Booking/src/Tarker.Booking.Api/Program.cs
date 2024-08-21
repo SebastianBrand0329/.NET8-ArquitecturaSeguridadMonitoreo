@@ -1,32 +1,27 @@
+using Tarker.Booking.Api;
+using Tarker.Booking.Application;
+using Tarker.Booking.Application.DataBase.User.Commands.CreateUser;
+using Tarker.Booking.Application.DataBase.User.Commands.DeleteUser;
+using Tarker.Booking.Application.DataBase.User.Commands.UpdateUser;
+using Tarker.Booking.Application.DataBase.User.Commands.UpdateUserPassword;
+using Tarker.Booking.Common;
+using Tarker.Booking.External;
+using Tarker.Booking.Persistence;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddWebApi()
+                .AddCommon()
+                .AddApplication()
+                .AddExternal(builder.Configuration)
+                .AddPersistence(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-var summaries = new[]
+app.MapPost("/testService", async (IDeleteUserCommand service) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
+    return await service.Execute(1);
 });
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
