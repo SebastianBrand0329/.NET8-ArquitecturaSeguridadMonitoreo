@@ -1,6 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using Tarker.Booking.Application.Configuration;
+using Tarker.Booking.Application.DataBase.Bookings.Commands.CreateBooking;
+using Tarker.Booking.Application.DataBase.Bookings.Queries.GetAllBookings;
+using Tarker.Booking.Application.DataBase.Bookings.Queries.GetBookingByType;
+using Tarker.Booking.Application.DataBase.Bookings.Queries.GetBookingsByDocumentNumber;
+using Tarker.Booking.Application.DataBase.Customer.Commands;
+using Tarker.Booking.Application.DataBase.Customer.Commands.CreateCustomer;
+using Tarker.Booking.Application.DataBase.Customer.Commands.DeleteCustomer;
+using Tarker.Booking.Application.DataBase.Customer.Commands.UpdateCustomer;
+using Tarker.Booking.Application.DataBase.Customer.Queries.GetAllCustomers;
+using Tarker.Booking.Application.DataBase.Customer.Queries.GetCustomerByDocumentNumber;
+using Tarker.Booking.Application.DataBase.Customer.Queries.GetCustomerById;
 using Tarker.Booking.Application.DataBase.User.Commands.CreateUser;
 using Tarker.Booking.Application.DataBase.User.Commands.DeleteUser;
 using Tarker.Booking.Application.DataBase.User.Commands.UpdateUser;
@@ -21,6 +32,8 @@ namespace Tarker.Booking.Application
             });
 
             services.AddSingleton(mapper.CreateMapper());
+
+            #region User
             services.AddTransient<ICreateUserCommand, CreateUserCommand>();
             services.AddTransient<IUpdateUserCommand, UpdateUserCommand>();
             services.AddTransient<IDeleteUserCommand, DeleteUserCommand>();
@@ -28,6 +41,28 @@ namespace Tarker.Booking.Application
             services.AddTransient<IGetAllUserQuery, GetAllUserQuery>();
             services.AddTransient<IGetUserByIdQuery, GetUserByIdQuery>();
             services.AddTransient<IGetUserByNameAndPassword, GetUserByNameAndPasswordCommand>();
+
+            #endregion
+
+            #region Customer
+            services.AddTransient<ICreateCustomerCommand, CreateCustomerCommand>();
+            services.AddTransient<IUpdateCustomerCommand, UpdateCustomerCommand>();
+            services.AddTransient<IDeleteCustomerCommand, DeleteCustomerCommand>();
+            services.AddTransient<IGetAllCustomerQuery, GetAllCustomerQuery>();
+            services.AddTransient<IGetCustomerByIdQuery, GetCustomerByIdQuery>();
+            services.AddTransient<IGetCustomerByIdQuery, GetCustomerByIdQuery>();
+            services.AddTransient<IGetCustomerByDocumentNumberQuery, GetCustomerByDocumentNumberQuery>();
+
+            #endregion
+
+            #region Booking
+            services.AddTransient<ICreateBookingCommand, CreateBookingCommand>();
+            services.AddTransient<IGetAllBookingsQuery, GetAllBookingsQuery>();
+            services.AddTransient<IGetBookingsByDocumentNumberQuery, GetBookingsByDocumentNumberQuery>();
+            services.AddTransient<IGetBookingByTypeQuery, GetBookingByTypeQuery>();
+
+            #endregion
+
             return services;
         }
     }
