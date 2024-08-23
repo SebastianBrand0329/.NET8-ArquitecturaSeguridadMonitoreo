@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Tarker.Booking.Application.Configuration;
 using Tarker.Booking.Application.DataBase.Bookings.Commands.CreateBooking;
 using Tarker.Booking.Application.DataBase.Bookings.Queries.GetAllBookings;
 using Tarker.Booking.Application.DataBase.Bookings.Queries.GetBookingByType;
 using Tarker.Booking.Application.DataBase.Bookings.Queries.GetBookingsByDocumentNumber;
-using Tarker.Booking.Application.DataBase.Customer.Commands;
 using Tarker.Booking.Application.DataBase.Customer.Commands.CreateCustomer;
 using Tarker.Booking.Application.DataBase.Customer.Commands.DeleteCustomer;
 using Tarker.Booking.Application.DataBase.Customer.Commands.UpdateCustomer;
@@ -19,6 +19,9 @@ using Tarker.Booking.Application.DataBase.User.Commands.UpdateUserPassword;
 using Tarker.Booking.Application.DataBase.User.Queries.GetAllUser;
 using Tarker.Booking.Application.DataBase.User.Queries.GetUserById;
 using Tarker.Booking.Application.DataBase.User.Queries.GetUserByNameAndPassword;
+using Tarker.Booking.Application.Validators.Booking;
+using Tarker.Booking.Application.Validators.Customer;
+using Tarker.Booking.Application.Validators.User;
 
 namespace Tarker.Booking.Application
 {
@@ -40,7 +43,7 @@ namespace Tarker.Booking.Application
             services.AddTransient<IUpdateUserPasswordCommand, UpdateUserPasswordCommand>();
             services.AddTransient<IGetAllUserQuery, GetAllUserQuery>();
             services.AddTransient<IGetUserByIdQuery, GetUserByIdQuery>();
-            services.AddTransient<IGetUserByNameAndPassword, GetUserByNameAndPasswordCommand>();
+            services.AddTransient<IGetUserByNameAndPasswordQuery, GetUserByNameAndPasswordQuery>();
 
             #endregion
 
@@ -60,6 +63,19 @@ namespace Tarker.Booking.Application
             services.AddTransient<IGetAllBookingsQuery, GetAllBookingsQuery>();
             services.AddTransient<IGetBookingsByDocumentNumberQuery, GetBookingsByDocumentNumberQuery>();
             services.AddTransient<IGetBookingByTypeQuery, GetBookingByTypeQuery>();
+
+            #endregion
+
+            #region Validator
+            services.AddScoped<IValidator<CreateUserModel>, CreateUserValidator>();
+            services.AddScoped<IValidator<UpdateUserModel>, UpdateUserValidator>();
+            services.AddScoped<IValidator<UpdateUserPasswordModel>, UpdateUserPasswordValidator>();
+            services.AddScoped<IValidator<(string, string)>, GetUserByNameAndPasswordValidator>();
+            
+            services.AddScoped<IValidator<CreateCustomerModel>, CreateCustomerValidator>();
+            services.AddScoped<IValidator<UpdateCustomerModel>, UpdateCustomerValidator>();
+            
+            services.AddScoped<IValidator<CreateBookingModel>, CreateBookingValidator>();
 
             #endregion
 

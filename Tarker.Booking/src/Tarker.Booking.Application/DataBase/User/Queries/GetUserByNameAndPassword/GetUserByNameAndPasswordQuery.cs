@@ -3,12 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Tarker.Booking.Application.DataBase.User.Queries.GetUserByNameAndPassword
 {
-    public class GetUserByNameAndPasswordCommand : IGetUserByNameAndPassword
+    public class GetUserByNameAndPasswordQuery : IGetUserByNameAndPasswordQuery
     {
         private readonly IDataBaseService _dataBaseService;
         private readonly IMapper _mapper;
 
-        public GetUserByNameAndPasswordCommand(IDataBaseService dataBaseService, IMapper mapper)
+        public GetUserByNameAndPasswordQuery(IDataBaseService dataBaseService, IMapper mapper)
         {
            _dataBaseService = dataBaseService;
            _mapper = mapper;
