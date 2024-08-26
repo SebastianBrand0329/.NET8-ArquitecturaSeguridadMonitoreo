@@ -15,6 +15,15 @@ builder.Services.AddWebApi()
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+    c.RoutePrefix = string.Empty;
+});
 app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
 

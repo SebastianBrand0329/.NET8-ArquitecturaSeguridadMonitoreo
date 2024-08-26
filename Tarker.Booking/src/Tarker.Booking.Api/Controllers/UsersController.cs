@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Tarker.Booking.Application.DataBase.User.Commands.CreateUser;
@@ -9,10 +10,12 @@ using Tarker.Booking.Application.DataBase.User.Queries.GetAllUser;
 using Tarker.Booking.Application.DataBase.User.Queries.GetUserById;
 using Tarker.Booking.Application.DataBase.User.Queries.GetUserByNameAndPassword;
 using Tarker.Booking.Application.Exceptions;
+using Tarker.Booking.Application.External.GetTokenJwt;
 using Tarker.Booking.Application.Features;
 
 namespace Tarker.Booking.Api.Controllers
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     [TypeFilter(typeof(ExceptionManager))]
@@ -91,8 +94,9 @@ namespace Tarker.Booking.Api.Controllers
             return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
         }
 
+        [AllowAnonymous]
         [HttpGet("get-by-userName-password/{userName}/{password}")]
-        public async Task<IActionResult> GetByUserNamePassword(string userName, string password, [FromServices] IGetUserByNameAndPasswordQuery getUser, [FromServices] IValidator<(string, string)> validator)
+        public async Task<IActionResult> GetByUserNamePassword(string userName, string password, [FromServices] IGetUserByNameAndPasswordQuery getUser, [FromServices] IValidator<(string, string)> validator, [FromServices] IGetTokenJwtService getTokenJwtService)
         {
             var validate = await validator.ValidateAsync((userName, password));
 
@@ -102,7 +106,7 @@ namespace Tarker.Booking.Api.Controllers
             var data = await getUser.Execute(userName, password);
             if (data == null)
                 return StatusCode(StatusCodes.Status404NotFound, ResponseApiService.Response(StatusCodes.Status404NotFound));
-
+            data.Token = getTokenJwtService.Execute(data.UserId.ToString());
             return StatusCode(StatusCodes.Status200OK, ResponseApiService.Response(StatusCodes.Status200OK, data));
         }
     }
